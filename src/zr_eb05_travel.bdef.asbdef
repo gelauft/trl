@@ -1,0 +1,66 @@
+managed implementation in class zbp_r_eb05_travel unique;
+strict ( 2 );
+
+/* Wurzelknoten Travel */
+define behavior for ZR_EB05_Travel alias Travel
+persistent table zeb05_atravel
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+  association _Bookings { create; }
+
+  static action show_test_message;
+  action cancel_booking;
+  action maintain_booking_fees parameter za_eb05_bookingfees result [1] $self;
+
+  field ( readonly, numbering : managed ) TravelUuid;
+  field ( readonly ) TravelId, TotalPrice;
+  field ( readonly ) Createdby, Createdat, Lastchangedby, Lastchangedat;
+  field ( mandatory : create ) AgencyId, BeginDate, CustomerId, EndDate;
+  field ( readonly : update ) AgencyId, BeginDate, CustomerId, EndDate;
+  field ( mandatory ) Description;
+
+  mapping for znk05_atravel corresponding
+    {
+      AgencyId     = agency_id;
+      BeginDate    = begin_date;
+      BookingFee   = booking_fee;
+      CurrencyCode = currency_code;
+      CustomerId   = customer_id;
+      EndDate      = end_date;
+      TotalPrice   = total_price;
+      TravelId     = travel_id;
+      TravelUuid   = travel_uuid;
+    }
+}
+
+define behavior for ZR_EB05_BOOKING alias Booking
+persistent table zeb05_abooking
+lock dependent by _Travel
+authorization dependent by _Travel
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly, numbering : managed ) BookingUuid;
+  field ( readonly ) TravelUuid;
+  association _Travel;
+
+  mapping for znk05_abooking corresponding
+    {
+      BookingDate  = booking_date;
+      BookingId    = booking_id;
+      BookingUuid  = booking_uuid;
+      CarrierId    = carrier_id;
+      ConnectionId = connection_id;
+      CurrencyCode = currency_code;
+      CustomerId   = customer_id;
+      FlightDate   = flight_date;
+      FlightPrice  = flight_price;
+      TravelUuid   = travel_uuid;
+    }
+}

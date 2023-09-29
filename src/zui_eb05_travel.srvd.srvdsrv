@@ -1,0 +1,5 @@
+@EndUserText.label: 'Travel'
+define service ZUI_EB05_TRAVEL {
+  expose ZC_EB05_Travel;
+  expose ZC_EB05_BOOKING;
+}
